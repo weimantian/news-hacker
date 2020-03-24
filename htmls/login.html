@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			text-decoration: none;
+			font-family: Microsoft Yahei;
+			box-sizing: border-box;
+		}
+
+		body {
+			min-height: 100vh;
+			background-image: linear-gradient(120deg, #3498db, #8e44ad);
+		}
+
+		.login-form {
+			width: 380px;
+			background-color: #f1f1f1;
+			height: 580px;
+			padding: 80px 40px;
+			border-radius: 10px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			/* 相当于 */
+/* 			margin-top: -290px;
+			margin-left: -190px; */
+		}
+
+		.login-form h1 {
+			text-align: center;
+			margin-bottom: 60px;
+		}
+
+		.text {
+			border-bottom: 2px solid #adadad;
+			position: relative;
+			margin: 30px 0;
+		}
+		.text input {
+			font-size: 15px;
+			color: #333;
+			border: none;
+			width: 100%;
+			outline: none;
+			background: none;
+			padding: 0 5px;
+			height: 40px;
+		}
+
+		.text span::before {
+			content:  attr(data-placeholder);
+			position: absolute;
+			top: 50%;
+			left: 5px;
+			color: #adadad;
+			transform: translateY(-50%);
+			z-index: -1;
+			transition: 0.5s;
+		}
+		
+		.text span::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 40px;
+			width: 0%;
+			height: 2px;
+			background: linear-gradient(120deg, #3498db, #8e44ad);
+			transition: 0.5s;
+		}
+
+		.focus +  span::before {
+			top: -5px;
+		}
+
+		.focus + span::after {
+			width: 100%;
+		}
+
+		.logbut {
+			display: block;
+			width: 100%;
+			height: 50px;
+			border: none;
+			outline: none;
+			background: linear-gradient(120deg, #3498db, #8e44ad, #3498db);
+			background-size: 200%;
+			color: #fff;
+			/* 光标形状 */
+			cursor: pointer;
+			transition: .5s;
+		}
+
+		.logbut:hover {
+			background-position: right;
+		}
+
+		.bottom-text {
+			margin-top: 60px;
+			text-align: center;
+			font-size: 13px;
+		}
+	</style>
+</head>
+<body>
+	<form action="/loginService" method="post" class="login-form">
+		<h1>Login</h1>
+
+		<div class="text">
+			<input type="text" name="name">
+			<span data-placeholder="Username"></span>
+		</div>
+
+		<div class="text">
+			<input type="password" name="url">
+			<span data-placeholder="Password"></span>
+		</div>
+		
+		<input type="submit" class="logbut" value="Login">
+
+		<div class="bottom-text">
+			Don't have account? <a href="#">Sign up</a>
+		</div>
+
+	</form>
+
+	<script>
+		
+		$(".text input").on("focus", function() {
+			$(this).addClass("focus");
+		});
+
+		$(".text input").on("blur", function() {
+			if($(this).val() == "") {
+				$(this).removeClass("focus");
+			}
+		});
+
+	</script>
+	
+</body>
+</html>

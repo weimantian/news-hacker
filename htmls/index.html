@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Hacker news</title>
+	<link rel="stylesheet" href="../public/normalize.css">
+</head>
+<body>
+	<div id="main">
+		<table>
+			<tbody>
+				<tr>
+					<td><a href="index">index </a><span>&nbsp;|&nbsp; </span></td>
+					<td><a href="commit">commit </a>&nbsp;|&nbsp; </td>
+					<td><a href="submit">submit </a>&nbsp;|&nbsp;</td>
+					<td><a href="login">Login </a> </td>
+				</tr>
+			</tbody>
+		</table> <br>
+		<table>
+			<tbody>
+				<% for(var i = 0; i <  item.length; i++) { %>
+			    <tr><td><%= (i+1) %>.&nbsp;<a href="/detail?id=<%= i %>"> <%= item[i].title %></a></td></tr>
+			    <tr><td><a href="/commit?id=<%= i %>">评论</a></td></tr>
+			    <% } %>
+			</tboBdy>
+		</table>
+	</div>	
+</body>
+</html>
