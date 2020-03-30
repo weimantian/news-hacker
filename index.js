@@ -17,7 +17,6 @@ const config = require('./config.js')
 http.createServer().on('request', function(req, res) {
 
     context(req, res);
-    console.log(req.url);
 
     router(req, res);
 

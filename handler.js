@@ -13,13 +13,15 @@ var connection = mysql.createConnection({
     user: "root",
     password: "root",
     port: 3306,
-    database: "runoob"
+    database: "hacker_news"
 });
 
 // index.html 
 module.exports.index = function(req, res) {
     readData(function(list) {
-        res.render(path.join(__dirname, 'htmls', 'index.html'), { item: list });
+        res.render(path.join(__dirname, 'htmls', 'index.html'), {
+            item: list
+        });
     });
 }
 
@@ -35,7 +37,9 @@ module.exports.detail = function(req, res) {
         // 获取新闻 id
         var id = req.query.id;
         //使用render函数进行渲染
-        res.render(path.join(__dirname, 'htmls', 'detail.html'), { item: list[id] });
+        res.render(path.join(__dirname, 'htmls', 'detail.html'), {
+            item: list[id]
+        });
     });
 }
 
@@ -44,45 +48,57 @@ module.exports.login = function(req, res) {
     res.render(path.join(__dirname, 'htmls', 'login.html'));
 }
 
-// loginService()
-module.exports.loginService = function(req, res) {
-    console.log("loginService");
+// denlu
+module.exports.denlu = function(req, res) {
     // post 方式提交用户信息
     // 获取post提交的数据
+    // 连接数据库
     var post = '';
     req.on('data', (chunk) => {
         post += chunk;
     });
-
     req.on('end', () => {
-        // 连接数据库
+
+        var userInfo = querystring.parse(post);
+
+        connection = mysql.createConnection(connection.config); 
         connection.connect();
 
         // 查询数据库
-        var sql = "SELECT * FROM Websites WHERE name=? and url=?";
+        var sql = "SELECT * FROM userinfo WHERE username=? and password=?";
         // 获取JSON提交的用户名和数据
-        var sqlParams = JSON.stringify(data);
-        console.log(sqlParams);
+        var sqlParams = [userInfo.username, userInfo.password];
 
         connection.query(sql, sqlParams, (err, result) => {
-            if(err) {
-                console.log("ERROR1: " ,err.message);
-                return;
+            if (err) {
+                console.log("ERROR1: ", err.message);
             }
-            if(!result) {
-                console.log(result);
-            } else {
-                console.log("无此用户");
-            }
-            res.statusCode = 302;
-            res.statusMessage = 'Found';
-            // 跳转，重定向
-            res.setHeader('location', '/');
-            res.end();
-        });
-        connection.end();
-    });
+            if (result[0] === undefined) {
 
+                console.log("无此用户...");
+                res.statusCode = 302;
+                res.statusMessage = 'Found';
+                // 跳转，重定向
+                res.setHeader('location', '/login');
+                res.end();
+
+            } else {
+
+                console.log("用户: " + result[0].username + " 登陆成功...")
+                res.statusCode = 302;
+                res.statusMessage = 'Found';
+                // 跳转，重定向
+                res.setHeader('location', '/');
+                res.end();
+            }
+
+        });
+
+        connection.end();
+
+
+
+    });
 }
 
 // addGet()
@@ -130,7 +146,7 @@ module.exports.addPost = function(req, res) {
 
 // 加载静态资源
 module.exports.staticResource = function(req, res) {
-    
+
     res.render(path.join(__dirname, req.url));
 
 }
@@ -187,4 +203,8 @@ function postSubmit(req, callback) {
             callback(list);
         });
     });
+}
+
+function sqlSelect(userInfo) {
+
 }

@@ -33,43 +33,10 @@ module.exports = function(req, res) {
 
     	handler.login(req, res);
 
-    } else if (req.pathname === '/loginService' && req.method === 'post') {
-        console.log("loginService");
-        // post 方式提交用户信息
-        // 获取post提交的数据
-        var post = '';
-        req.on('data', (chunk) => {
-            post += chunk;
-        });
+    } else if (req.pathname === '/denlu' && req.method === 'post') {
 
-        req.on('end', () => {
-            // 连接数据库
-            connection.connect();
-
-            // 查询数据库
-            var sql = "SELECT * FROM Websites WHERE name=? and url=?";
-            // 获取JSON提交的用户名和数据
-            var sqlParams = JSON.stringify(data);
-            console.log(sqlParams);
-
-            connection.query(sql, sqlParams, (err, result) => {
-                if(err) {
-                    console.log("ERROR1: " ,err.message);
-                    return;
-                }
-                if(!result) {
-                    console.log(result);
-                } else {
-                    console.log("无此用户");
-                }
-                res.statusCode = 302;
-                res.statusMessage = 'Found';
-                // 跳转，重定向
-                res.setHeader('location', '/');
-                res.end();
-            });
-            connection.end();
-        });
+        handler.denlu(req, res);
+        
     } else {
 
     	handler.errorPage(res);
