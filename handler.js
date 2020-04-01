@@ -4,17 +4,15 @@ const fs = require('fs');
 const path = require('path');
 const querystring = require('querystring');
 const _ = require('underscore');
+
+const dbHandler = require("./dbHandler.js");
+
 const mysql = require('mysql');
 
-const mysqlConfig = require('./mysqlConfig.js')
+const mysqlConfig = require('./mysqlConfig.js');
 
-var connection = mysql.createConnection({
-    host: "192.168.1.2",
-    user: "root",
-    password: "root",
-    port: 3306,
-    database: "hacker_news"
-});
+var connection = mysql.createConnection(mysqlConfig);
+
 
 // index.html 
 module.exports.index = function(req, res) {
@@ -60,43 +58,12 @@ module.exports.denlu = function(req, res) {
     req.on('end', () => {
 
         var userInfo = querystring.parse(post);
-
-        connection = mysql.createConnection(connection.config); 
+        connection = mysql.createConnection(connection.config);
         connection.connect();
 
-        // 查询数据库
-        var sql = "SELECT * FROM userinfo WHERE username=? and password=?";
-        // 获取JSON提交的用户名和数据
-        var sqlParams = [userInfo.username, userInfo.password];
-
-        connection.query(sql, sqlParams, (err, result) => {
-            if (err) {
-                console.log("ERROR1: ", err.message);
-            }
-            if (result[0] === undefined) {
-
-                console.log("无此用户...");
-                res.statusCode = 302;
-                res.statusMessage = 'Found';
-                // 跳转，重定向
-                res.setHeader('location', '/login');
-                res.end();
-
-            } else {
-
-                console.log("用户: " + result[0].username + " 登陆成功...")
-                res.statusCode = 302;
-                res.statusMessage = 'Found';
-                // 跳转，重定向
-                res.setHeader('location', '/');
-                res.end();
-            }
-
-        });
+        dbHandler.select(res, connection, userInfo);
 
         connection.end();
-
-
 
     });
 }

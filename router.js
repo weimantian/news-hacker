@@ -1,7 +1,5 @@
 //模块3（路由模块）；负责路由判断
 //负责封装所有路由判断代码
-
-
 const handler = require('./handler.js')
 
 module.exports = function(req, res) {
