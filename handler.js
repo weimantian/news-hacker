@@ -7,11 +7,6 @@ const _ = require('underscore');
 
 const dbHandler = require("./dbHandler.js");
 
-const mysql = require('mysql');
-
-const mysqlConfig = require('./mysqlConfig.js');
-
-var connection = mysql.createConnection(mysqlConfig);
 
 
 // index.html 
@@ -58,13 +53,15 @@ module.exports.denlu = function(req, res) {
     req.on('end', () => {
 
         var userInfo = querystring.parse(post);
-        connection = mysql.createConnection(connection.config);
-        connection.connect();
 
-        dbHandler.select(res, connection, userInfo);
+        dbHandler.conn(() => {
 
-        connection.end();
+            dbHandler.select(res, userInfo, ()=> {
 
+                dbHandler.close();
+
+            })
+        })
     });
 }
 
@@ -170,8 +167,4 @@ function postSubmit(req, callback) {
             callback(list);
         });
     });
-}
-
-function sqlSelect(userInfo) {
-
 }
