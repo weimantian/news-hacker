@@ -35,6 +35,9 @@ module.exports = function(req, res) {
 
         handler.denlu(req, res);
         
+    } else if(req.pathname === '/addcmm') {
+
+        handler.addcmm(req, res);
     } else {
 
     	handler.errorPage(res);

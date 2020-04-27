@@ -20,7 +20,8 @@ module.exports = function(req, res) {
 	// 4. 为 res 增加一个 render 方法，进行数据加载及模板渲染
 	res.render = function(filename, templateData) {
         fs.readFile(filename, function(err, data) {
-            if (err) {
+            if (err && err.code !== "ENOENT") {
+                
                 throw err;
             }
             if (templateData) {

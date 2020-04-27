@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const querystring = require('querystring');
+const querystring = require('querystring');//负责将字符串解析街详细为json
 const _ = require('underscore');
 
 const dbHandler = require("./dbHandler.js");
@@ -63,6 +63,42 @@ module.exports.denlu = function(req, res) {
             })
         })
     });
+}
+
+// addcmm()
+module.exports.addcmm = function(req, res) {
+
+    var post = '';
+    req.on('data', (chunk) => {
+        post += chunk;
+    });
+    req.on('end', () => {
+        
+        var postJson = querystring.parse(post);
+
+        var filename = req.query.id+'.json';
+
+        fs.readFile(path.join(__dirname, 'public', 'news', filename), 'utf-8', (err, data) => {
+            
+            if(err && err.code !== "ENOENT") {
+
+                throw err;
+            } 
+
+            var list = JSON.parse(data || '[]');
+
+            var cmm = {"id": list.length, "content": postJson.content, "time": dateFormate(new Date()),"commentator": postJson.commentator }
+        
+            list.push(cmm);
+            fs.writeFile(path.join(__dirname, 'public', 'news', filename), JSON.stringify(list), (err)=>{
+
+                if(err) throw err;
+            })
+
+        });
+    });
+
+
 }
 
 // addGet()
@@ -167,4 +203,16 @@ function postSubmit(req, callback) {
             callback(list);
         });
     });
+}
+function dateFormate(dateStr) {//时间格式化
+    var date = new Date(dateStr);
+
+    var y = date.getFullYear().toString().padStart(2, '0');
+    var m = (date.getMonth()+1).toString().padStart(2, '0');
+    var d = date.getDay().toString().padStart(2, '0');
+    var hh = date.getHours().toString().padStart(2, '0');
+    var mm = date.getMinutes().toString().padStart(2, '0');
+    var ss = date.getSeconds().toString().padStart(2, '0');
+
+    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`; 
 }
